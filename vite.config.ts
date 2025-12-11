@@ -1,9 +1,30 @@
 import react from "@vitejs/plugin-react";
+import { copyFileSync, existsSync } from "fs";
 import { resolve } from "path";
 import { defineConfig } from "vitest/config";
 
+// Custom plugin to copy manifest and build extension scripts
+const chromeExtensionPlugin = () => ({
+  name: "chrome-extension",
+  closeBundle: () => {
+    // Copy manifest.json to dist
+    copyFileSync(
+      resolve(__dirname, "public/manifest.json"),
+      resolve(__dirname, "dist/manifest.json")
+    );
+    
+    // Copy offscreen.html to correct location
+    if (existsSync(resolve(__dirname, "dist/public/offscreen.html"))) {
+      copyFileSync(
+        resolve(__dirname, "dist/public/offscreen.html"),
+        resolve(__dirname, "dist/offscreen.html")
+      );
+    }
+  },
+});
+
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), chromeExtensionPlugin()],
   test: {
     globals: true,
     environment: "jsdom",
@@ -30,17 +51,24 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: resolve(__dirname, "index.html"),
+        background: resolve(__dirname, "src/shell/background/service-worker.ts"),
+        loader: resolve(__dirname, "src/shell/content/loader.ts"),
+        "main-world": resolve(__dirname, "src/inject/main-world.ts"),
         offscreen: resolve(__dirname, "public/offscreen.html"),
       },
       output: {
         entryFileNames: (chunkInfo) => {
-          if (chunkInfo.name === "offscreen") {
-            return "offscreen.js";
+          if (chunkInfo.name === "loader") {
+            return "content/[name].js";
           }
           return "[name].js";
         },
+        chunkFileNames: "assets/[name]-[hash].js",
+        assetFileNames: "assets/[name]-[hash][extname]",
       },
     },
     outDir: "dist",
+    emptyOutDir: true,
   },
+  publicDir: "public",
 });
