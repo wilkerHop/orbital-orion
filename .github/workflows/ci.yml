@@ -1,0 +1,95 @@
+name: Health Check
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  typecheck:
+    name: TypeScript Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run typecheck
+
+  lint:
+    name: ESLint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run lint
+
+  test:
+    name: Tests with Coverage
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run test:coverage
+
+  forbidden-patterns:
+    name: Forbidden Patterns Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check for console statements
+        run: |
+          if grep -rE "console\.(log|warn|error|info|debug)" src --include="*.ts" --include="*.tsx" 2>/dev/null; then
+            echo "❌ FOUND: Console statements"
+            exit 1
+          fi
+          echo "✅ No console statements"
+      - name: Check for TODO/FIXME
+        run: |
+          if grep -rE "TODO|FIXME" src --include="*.ts" --include="*.tsx" 2>/dev/null; then
+            echo "❌ FOUND: TODO/FIXME markers"
+            exit 1
+          fi
+          echo "✅ No TODO/FIXME markers"
+      - name: Check for any type
+        run: |
+          if grep -rE ":\s*any\b|<any>|as\s+any" src --include="*.ts" --include="*.tsx" 2>/dev/null; then
+            echo "❌ FOUND: 'any' type usage"
+            exit 1
+          fi
+          echo "✅ No 'any' type usage"
+      - name: Check for ignore directives
+        run: |
+          if grep -rE "eslint-disable|@ts-ignore|@ts-nocheck|@ts-expect-error" src 2>/dev/null; then
+            echo "❌ FOUND: Ignore directives"
+            exit 1
+          fi
+          echo "✅ No ignore directives"
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    needs: [typecheck, lint, test, forbidden-patterns]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: extension-dist
+          path: dist/

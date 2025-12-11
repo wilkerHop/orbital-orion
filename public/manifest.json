@@ -1,0 +1,34 @@
+{
+  "manifest_version": 3,
+  "name": "WhatsApp Fiber Scraper",
+  "version": "1.0.0",
+  "description": "Scrape WhatsApp Web chat messages via React Fiber tree traversal",
+  "permissions": ["scripting", "storage", "unlimitedStorage", "activeTab", "offscreen"],
+  "host_permissions": ["https://web.whatsapp.com/*"],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://web.whatsapp.com/*"],
+      "js": ["content/loader.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_popup": "index.html",
+    "default_title": "WhatsApp Scraper"
+  },
+  "icons": {
+    "16": "icons/icon-16.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["main-world.js"],
+      "matches": ["https://web.whatsapp.com/*"]
+    }
+  ]
+}
