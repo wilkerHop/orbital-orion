@@ -9,7 +9,8 @@ import { createEvent, isWindowMessage } from "../messaging/types.ts";
 // Inject main-world script into page context
 const injectMainWorldScript = (): void => {
   const script = document.createElement("script");
-  script.src = chrome.runtime.getURL("main-world.js");
+  // CRXJS keeps the source path, so we reference the TypeScript file
+  script.src = chrome.runtime.getURL("src/inject/main-world.ts");
   script.type = "module";
 
   script.onload = (): void => {

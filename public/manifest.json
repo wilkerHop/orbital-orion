@@ -6,13 +6,13 @@
   "permissions": ["scripting", "storage", "unlimitedStorage", "activeTab", "offscreen"],
   "host_permissions": ["https://web.whatsapp.com/*"],
   "background": {
-    "service_worker": "background.js",
+    "service_worker": "src/shell/background/service-worker.ts",
     "type": "module"
   },
   "content_scripts": [
     {
       "matches": ["https://web.whatsapp.com/*"],
-      "js": ["content/loader.js"],
+      "js": ["src/shell/content/loader.ts"],
       "run_at": "document_idle"
     }
   ],
@@ -27,7 +27,7 @@
   },
   "web_accessible_resources": [
     {
-      "resources": ["main-world.js"],
+      "resources": ["src/inject/main-world.ts"],
       "matches": ["https://web.whatsapp.com/*"]
     }
   ]
