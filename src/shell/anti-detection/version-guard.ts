@@ -9,7 +9,7 @@ interface VersionCheckResult {
 }
 
 interface VersionGuard {
-  check: () => Promise<VersionCheckResult>;
+  check: () => VersionCheckResult;
   getStoredHash: () => string | null;
   updateHash: (hash: string) => void;
 }
@@ -76,7 +76,7 @@ export const createVersionGuard = (): VersionGuard => {
 
   loadStoredHash();
 
-  const check = async (): Promise<VersionCheckResult> => {
+  const check = (): VersionCheckResult => {
     const currentHash = generateDomHash(CRITICAL_SELECTORS);
 
     // If no stored hash, this is first run - store and allow

@@ -61,7 +61,7 @@ export const Popup = (): React.ReactElement => {
 
   const handleExportData = useCallback((): void => {
     chrome.storage.local.get(["exportData"], (result) => {
-      const data = result["exportData"] as unknown;
+      const data = result["exportData"];
       if (data !== undefined) {
         const blob = new Blob([JSON.stringify(data, null, 2)], {
           type: "application/json",

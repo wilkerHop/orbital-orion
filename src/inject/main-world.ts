@@ -4,10 +4,10 @@
  */
 
 import {
-    byComponentName,
-    collectNodes,
-    findFiberPropertyKey,
-    getReactFiberPrefixes
+  byComponentName,
+  collectNodes,
+  findFiberPropertyKey,
+  getReactFiberPrefixes
 } from "../core/fiber/traversal.ts";
 import { extractMessageFromFiber } from "../core/parsers/message-parser.ts";
 import type { NormalizedMessage, RawFiberNode } from "../core/types/index.ts";
@@ -15,9 +15,9 @@ import { createHeuristicScroller } from "../shell/anti-detection/scroller.ts";
 import { createVersionGuard } from "../shell/anti-detection/version-guard.ts";
 import type { WindowMessage } from "../shell/messaging/types.ts";
 import {
-    createEvent,
-    isScrapeCommand,
-    isWindowMessage,
+  createEvent,
+  isScrapeCommand,
+  isWindowMessage,
 } from "../shell/messaging/types.ts";
 
 // Version guard instance
@@ -125,7 +125,7 @@ const executeScrape = async (
   scrollDepth: number
 ): Promise<void> => {
   // Version check first
-  const versionCheck = await versionGuard.check();
+  const versionCheck = versionGuard.check();
   if (!versionCheck.isCompatible) {
     const errorEvent: WindowMessage = {
       source: "whatsapp-scraper",

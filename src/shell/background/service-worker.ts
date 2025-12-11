@@ -5,18 +5,17 @@
 
 import { createRateLimiter } from "../anti-detection/rate-limiter.ts";
 import type {
-    DataExtractedEvent,
-    ExtensionEvent,
-    KeepAliveEvent,
-    PersistDataEvent,
-    ScrapeCommandEvent,
+  DataExtractedEvent,
+  ExtensionEvent,
+  KeepAliveEvent,
+  ScrapeCommandEvent
 } from "../messaging/types.ts";
 import {
-    createEvent,
-    isDataExtracted,
-    isKeepAlive,
-    isPersistData,
-    isScrapeCommand,
+  createEvent,
+  isDataExtracted,
+  isKeepAlive,
+  isPersistData,
+  isScrapeCommand,
 } from "../messaging/types.ts";
 
 // Rate limiter instance
@@ -45,7 +44,7 @@ const handleMessage = async (
   }
 
   if (isPersistData(event)) {
-    return handlePersistData(event);
+    return handlePersistData();
   }
 
   if (isKeepAlive(event)) {
@@ -106,9 +105,7 @@ const handleDataExtracted = async (
   return null;
 };
 
-const handlePersistData = async (
-  _event: PersistDataEvent
-): Promise<ExtensionEvent | null> => {
+const handlePersistData = (): ExtensionEvent | null => {
   // Delegate to offscreen document
   return null;
 };

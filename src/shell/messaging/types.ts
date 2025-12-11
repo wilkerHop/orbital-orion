@@ -147,9 +147,10 @@ export interface WindowMessage {
   readonly event: ExtensionEvent;
 }
 
-export const isWindowMessage = (data: unknown): data is WindowMessage =>
-  data !== null &&
-  typeof data === "object" &&
-  "source" in data &&
-  (data as WindowMessage).source === "whatsapp-scraper" &&
-  "event" in data;
+export const isWindowMessage = (data: unknown): data is WindowMessage => {
+  if (data === null || typeof data !== "object") {
+    return false;
+  }
+  const obj = data as Record<string, unknown>;
+  return obj["source"] === "whatsapp-scraper" && "event" in obj;
+};

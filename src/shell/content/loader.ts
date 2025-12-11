@@ -16,7 +16,7 @@ const injectMainWorldScript = (): void => {
     script.remove();
   };
 
-  (document.head ?? document.documentElement).appendChild(script);
+  document.documentElement.appendChild(script);
 };
 
 // Listen for messages from main world via postMessage

@@ -29,7 +29,7 @@ describe("Result monad", () => {
       fc.assert(
         fc.property(fc.anything(), (value) => {
           const result = ok(value);
-          return result.ok === true && result.value === value;
+          return result.ok && result.value === value;
         })
       );
     });
@@ -48,7 +48,7 @@ describe("Result monad", () => {
       fc.assert(
         fc.property(fc.anything(), (error) => {
           const result = err(error);
-          return result.ok === false && result.error === error;
+          return !result.ok && result.error === error;
         })
       );
     });
@@ -107,12 +107,12 @@ describe("Result monad", () => {
     });
 
     it("short-circuits on error", () => {
-      const result = flatMap(err("fail"), (_x: number) => ok(10));
+      const result = flatMap(err("fail"), () => ok(10));
       expect(result).toEqual(err("fail"));
     });
 
     it("propagates errors from chained function", () => {
-      const result = flatMap(ok(5), (_x) => err("inner fail"));
+      const result = flatMap(ok(5), () => err("inner fail"));
       expect(result).toEqual(err("inner fail"));
     });
   });

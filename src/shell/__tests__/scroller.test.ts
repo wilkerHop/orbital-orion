@@ -82,7 +82,7 @@ describe("Heuristic Scroller", () => {
       const scroller = createHeuristicScroller();
       const distances: number[] = [];
 
-      for (const _ of Array.from({ length: 5 })) {
+      for (let i = 0; i < 5; i++) {
         const mockElement = { scrollTop: 500 } as unknown as Element;
         const scrollPromise = scroller.scrollUp(mockElement, 100);
         await vi.advanceTimersByTimeAsync(1000);
