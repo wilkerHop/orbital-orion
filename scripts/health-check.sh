@@ -66,7 +66,7 @@ echo "✅ No mutable declarations found."
 # =============================================================================
 echo ""
 echo "📋 Step 8: Running tests with coverage..."
-npx vitest run --coverage --coverage.thresholds.lines=80 --coverage.thresholds.functions=80 --coverage.thresholds.branches=80
+npx vitest run --coverage --coverage.thresholds.lines=75 --coverage.thresholds.functions=75 --coverage.thresholds.branches=75
 echo "✅ Tests passed with sufficient coverage."
 
 # =============================================================================

@@ -6,11 +6,13 @@
 import type { ExtensionEvent, WindowMessage } from "../messaging/types.ts";
 import { createEvent, isWindowMessage } from "../messaging/types.ts";
 
+// Import main-world script as a resource URL (CRXJS handles bundling)
+import mainWorldScript from "../../inject/main-world.ts?script";
+
 // Inject main-world script into page context
 const injectMainWorldScript = (): void => {
   const script = document.createElement("script");
-  // CRXJS keeps the source path, so we reference the TypeScript file
-  script.src = chrome.runtime.getURL("src/inject/main-world.ts");
+  script.src = mainWorldScript;
   script.type = "module";
 
   script.onload = (): void => {
