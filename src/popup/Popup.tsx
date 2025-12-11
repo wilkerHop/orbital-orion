@@ -39,14 +39,29 @@ export const Popup = (): React.ReactElement => {
         return;
       }
 
+      // Send command directly to the content script on the active tab
+      // The content script will forward it to main-world
+      const scrapeEvent = createEvent("SCRAPE_COMMAND", {
+        targetChatId: null,
+        scrollDepth,
+        includeMedia: true,
+      });
+
       chrome.tabs.sendMessage(
         tabId,
-        createEvent("SCRAPE_COMMAND", {
-          targetChatId: null,
-          scrollDepth,
-          includeMedia: true,
-        }),
+        scrapeEvent,
         (response: ExtensionEvent | undefined) => {
+          // Check for chrome runtime errors (e.g., no content script on page)
+          const lastError = chrome.runtime.lastError;
+          if (lastError !== undefined) {
+            setStatus((prev) => ({
+              ...prev,
+              isRunning: false,
+              lastError: `Extension error: ${lastError.message ?? "Unknown error"}`,
+            }));
+            return;
+          }
+
           if (response !== undefined && isError(response)) {
             setStatus((prev) => ({
               ...prev,
