@@ -104,14 +104,13 @@ const startKeepAlive = (): void => {
   setInterval(ping, 20000);
 };
 
-// Wait for WhatsApp to fully load
+// Wait for WhatsApp to fully load (just needs #app element)
 const waitForWhatsAppReady = (): Promise<void> => {
   return new Promise((resolve) => {
     const checkReady = (): void => {
       const appElement = document.getElementById("app");
-      const mainPanel = document.querySelector('[data-testid="conversation-panel-wrapper"]');
 
-      if (appElement !== null && mainPanel !== null) {
+      if (appElement !== null) {
         resolve();
         return;
       }
