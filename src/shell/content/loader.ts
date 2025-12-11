@@ -12,7 +12,8 @@ import mainWorldScript from "../../inject/main-world.ts?script";
 // Inject main-world script into page context
 const injectMainWorldScript = (): void => {
   const script = document.createElement("script");
-  script.src = mainWorldScript;
+  // Use chrome.runtime.getURL to get full extension URL from the bundled path
+  script.src = chrome.runtime.getURL(mainWorldScript);
   script.type = "module";
 
   script.onload = (): void => {
