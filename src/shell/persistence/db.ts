@@ -72,9 +72,7 @@ export const saveThread = async (thread: ChatThread): Promise<void> => {
 
 export const getThread = async (id: string): Promise<ChatThread | undefined> => {
   const db = await getDB();
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- idb library returns any
-  const result = await db.get("threads", id);
-  return result as ChatThread | undefined;
+  return (await db.get("threads", id)) as ChatThread | undefined;
 };
 
 export const getAllThreads = async (): Promise<readonly ChatThread[]> => {
@@ -121,9 +119,7 @@ export const getMessage = async (
   id: string
 ): Promise<(NormalizedMessage & { threadId: string }) | undefined> => {
   const db = await getDB();
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- idb library returns any
-  const result = await db.get("messages", id);
-  return result as (NormalizedMessage & { threadId: string }) | undefined;
+  return (await db.get("messages", id)) as (NormalizedMessage & { threadId: string }) | undefined;
 };
 
 // Attachment operations
@@ -147,9 +143,7 @@ export const getAttachment = async (
   id: string
 ): Promise<(Attachment & { messageId: string; blob: Blob | null }) | undefined> => {
   const db = await getDB();
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- idb library returns any
-  const result = await db.get("attachments", id);
-  return result as (Attachment & { messageId: string; blob: Blob | null }) | undefined;
+  return (await db.get("attachments", id)) as (Attachment & { messageId: string; blob: Blob | null }) | undefined;
 };
 
 // Bulk operations

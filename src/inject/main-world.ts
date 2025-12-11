@@ -144,10 +144,14 @@ const executeScrape = async (
     return;
   }
 
-  let totalScrolled = 0;
-  let batchIndex = 0;
+  const scrapeLoop = async (
+    scrolledSoFar: number,
+    currentBatchIndex: number
+  ): Promise<number> => {
+    if (scrolledSoFar >= scrollDepth || container.scrollTop <= 0) {
+      return currentBatchIndex;
+    }
 
-  while (totalScrolled < scrollDepth) {
     // Extract current visible messages
     const messages = extractMessages();
     const threadInfo = getChatThreadInfo();
@@ -158,7 +162,7 @@ const executeScrape = async (
       event: createEvent("DATA_EXTRACTED", {
         messages,
         threadInfo,
-        batchIndex,
+        batchIndex: currentBatchIndex,
         isComplete: false,
       }),
     };
@@ -166,14 +170,17 @@ const executeScrape = async (
 
     // Human-like scroll
     const scrollResult = await scroller.scrollUp(container, 300);
-    totalScrolled += scrollResult.distance;
-    batchIndex += 1;
+    const newTotalScrolled = scrolledSoFar + scrollResult.distance;
 
     // Check if we've reached the top
     if (container.scrollTop <= 0) {
-      break;
+      return currentBatchIndex + 1;
     }
-  }
+
+    return scrapeLoop(newTotalScrolled, currentBatchIndex + 1);
+  };
+
+  const finalBatchIndex = await scrapeLoop(0, 0);
 
   // Final batch
   const finalMessages = extractMessages();
@@ -184,7 +191,7 @@ const executeScrape = async (
     event: createEvent("DATA_EXTRACTED", {
       messages: finalMessages,
       threadInfo: finalThreadInfo,
-      batchIndex,
+      batchIndex: finalBatchIndex,
       isComplete: true,
     }),
   };
