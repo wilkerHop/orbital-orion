@@ -20,7 +20,7 @@
     "react-dom": "^19.2.0"
   },
   "devDependencies": {
-    "@anthropic-ai/claude-code": "^2.0.65",
+    "@anthropic-ai/claude-code": "^2.1.53",
     "@anthropic-ai/sdk": "^0.71.2",
     "@anthropic-ai/tokenizer": "^0.0.4",
     "@crxjs/vite-plugin": "^2.0.0-beta.33",
